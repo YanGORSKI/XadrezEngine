@@ -13,12 +13,13 @@ import br.SoLDev.engine.board.Move;
 import br.SoLDev.engine.board.Tile;
 import br.SoLDev.engine.board.Move.AttackMove;
 import br.SoLDev.engine.board.Move.MajorMove;
+import br.SoLDev.engine.pieces.Piece.PieceType;
 
 public class Rook extends Piece {
 	
 	private final static int[] CANDIDATE_MOVE_VECTOR_COORD = {-8, -1, 1, 8};
 
-	Rook(int piecePosition, Alliance pieceAlliance) {
+	public Rook(final int piecePosition, final Alliance pieceAlliance) {
 		super(piecePosition, pieceAlliance);
 	}
 
@@ -30,16 +31,15 @@ public class Rook extends Piece {
 		for(final int candidateCoordOffset: CANDIDATE_MOVE_VECTOR_COORD) {
 			int candidateDestinationCoord = this.piecePosition;
 			while(BoardUtils.isValidTileCoord(candidateDestinationCoord)) {
-				if (isFirstColumnExclusion(candidateDestinationCoord, candidateCoordOffset) || isEighthColumnExclusion(candidateDestinationCoord, candidateCoordOffset)) {
+				if (isFirstColumnExclusion(candidateDestinationCoord, candidateCoordOffset) ||
+						isEighthColumnExclusion(candidateDestinationCoord, candidateCoordOffset)) {
 					break;
 				}
 				candidateDestinationCoord += candidateCoordOffset;
-				if (BoardUtils.isValidTileCoord(candidateDestinationCoord)) {
+				if(BoardUtils.isValidTileCoord(candidateDestinationCoord)) {
 					final Tile candidateDestinationTile = board.getTile(candidateDestinationCoord);
-					
 					if(!candidateDestinationTile.isTileOccupied()) {
 						legalMoves.add(new MajorMove(board, this, candidateDestinationCoord));
-					
 					} else {
 						final Piece pieceAtDestination = candidateDestinationTile.getPiece();
 						final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
@@ -54,6 +54,11 @@ public class Rook extends Piece {
 		}
 		
 		return ImmutableList.copyOf(legalMoves);
+	}
+	
+	@Override
+	public String toString() {
+		return PieceType.ROOK.toString();
 	}
 	
 	private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
